@@ -8,6 +8,9 @@ ucard1 = randint(1,10)
 ucard2 = randint(1,10)
 dcard1= randint(1,10)
 newcard = randint(1,10)
+user_hand.append(ucard1)
+user_hand.append(ucard2)
+dealer_hand.append(dcard1)
 
 
 def hello_to_user():
@@ -18,16 +21,11 @@ def place_bets(bet):
     bet = int(input("Place your bets:\n"))
     return bet
 
-def deal_cards():
-    user_hand.append(ucard1)
-    user_hand.append(ucard2)
-    dealer_hand.append(dcard1)
-    return user_hand, dealer_hand
 
   
 def show_cards(user_hand,dealer_hand):
-    print(f"user cards:{ucard1},{ucard2}")
-    print(f"dealer cards:{dcard1}")
+    print(f"user cards:{user_hand}")
+    print(f"dealer cards:{dealer_hand}")
   
 def ask_choice():
     choice = input("Hit or Stand?")
@@ -40,15 +38,16 @@ def user_new_card(user_hand,dealer_hand):
 
 def dealer_new_card(user_hand,dealer_hand):
     dealer_hand.append(newcard) 
-    print(dealer_hand)
     return dealer_hand
     
 
 def gen_new_card(user_hand,dealer_hand):
     if choice == "hit":
       user_new_card(user_hand,dealer_hand)
+      return user_hand
     elif choice == "stand":
       dealer_new_card(user_hand,dealer_hand)
+      return dealer_hand
 
 
 
@@ -59,4 +58,9 @@ if __name__ == "__main__":
     place_bets(fund)
     show_cards(user_hand,dealer_hand)
     choice = ask_choice()
-    gen_new_card(user_hand,dealer_hand)
+    if choice == "hit":
+      user_hand = user_new_card(user_hand,dealer_hand)
+    elif choice == "stand":
+      dealer_hand = dealer_new_card(user_hand,dealer_hand)
+    sgow
+        
