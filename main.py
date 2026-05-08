@@ -1,5 +1,10 @@
 ## Personal Programming Project - Carolina 
 import random
+import tkinter as tk
+root = tk.Tk()
+label = tk.Label(root, text="Hello", font=("Arial", 25))
+label.pack()
+print(label)
 
 fund = 1000
 deck = ['🂡', '🂱', '🃁', '🃑',
@@ -32,7 +37,7 @@ values = [11, 11, 11, 11,
         10, 10, 10, 10,
         10, 10, 10, 10]
 
-dict: {'🂡':11, '🂱':11, '🃁':11, '🃑':11,
+dict =  {'🂡':11, '🂱':11, '🃁':11, '🃑':11,
         '🂢':2, '🂲':2, '🃂':2, '🃒':2,
         '🂣':3, '🂳':3, '🃃':3, '🃓':3,
         '🂤':4, '🂴':4, '🃄':4, '🃔':4,
@@ -48,29 +53,43 @@ dict: {'🂡':11, '🂱':11, '🃁':11, '🃑':11,
         '🂮':10, '🂾':10, '🃎':10, '🃞':10}
 
 deck_and_values = zip(deck,values)
-
+random.shuffle(deck)
         
 user_hand = []
 dealer_hand = []
 ucard1 = deck[0]
 ucard2 = deck[1]
 dcard1= deck[2]
-newcard = deck
+newcard = deck[3]
 game_over = False
 
 user_hand.append(ucard1)
 user_hand.append(ucard2)
 dealer_hand.append(dcard1)
+def hello_to_user():
+  print("hello. we are playing blackjack.")
+
+def place_bets(fund):
+  print(f"you have {fund}$ remaining.")
+  bet = int(input("Place your bets:"))
+
+def show_initial_cards(user_hand,dealer_hand):
+  print(f"user: {user_hand}")
+  print(f"dealer: {dealer_hand}🂠")
+  
 def ask_choice():
+    choice = input("hit or stand?")
     choice = choice.lower()
     return choice
 
 def user_new_card(user_hand):
+    random.shuffle(deck)
     user_hand.append(newcard)
     return user_hand
 
 
 def dealer_new_card(dealer_hand):
+    random.shuffle(deck)
     dealer_hand.append(newcard) 
     return dealer_hand
 
@@ -78,11 +97,9 @@ def dealer_new_card(dealer_hand):
 
 def gen_new_card(choice):
     if choice == "hit":
-      user_new_card(user_hand,dealer_hand)
       user_new_card(user_hand)
       return user_hand
     elif choice == "stand":
-      dealer_new_card(user_hand,dealer_hand)
       dealer_new_card(dealer_hand)
       return dealer_hand
 
@@ -108,17 +125,20 @@ def check_if_closer_21(utotal, dtotal):
         user_wins = False
     return user_wins
 
+def show_cards(new_user, new_dealer):
+   print(new_user)
+   print(new_dealer)
+
 
 if __name__ == "__main__":
     hello_to_user()
     place_bets(fund)
-    show_cards(user_hand,dealer_hand)
+    show_initial_cards(user_hand,dealer_hand)
     choice = ask_choice()
-    if choice == "hit":
-      user_hand = user_new_card(user_hand,dealer_hand)
-    elif choice == "stand":
-      dealer_hand = dealer_new_card(user_hand,dealer_hand)
-    sgow
+    if choice == "hit" or choice == "h":
+      user_hand = user_new_card(user_hand)
+    elif choice == "stand" or choice == "s":
+      dealer_hand = dealer_new_card(dealer_hand)
         
     while game_over == False:
         show_cards(user_hand,dealer_hand)
@@ -128,4 +148,9 @@ if __name__ == "__main__":
         utotal = sum(user_hand)
         dtotal = sum(dealer_hand)
         check_if_over_21(utotal,dtotal)
-      #  check_if_closer_21(utotal,dtotal)
+        user_wins = check_if_closer_21(utotal,dtotal)
+    print("game_over.")
+    if user_wins == True:
+      print("User wins.")
+    else:
+      print("Dealer wins.")
