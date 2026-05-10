@@ -1,10 +1,5 @@
 ## Personal Programming Project - Carolina 
 import random
-import tkinter as tk
-root = tk.Tk()
-label = tk.Label(root, text="Hello", font=("Arial", 25))
-label.pack()
-print(label)
 
 fund = 1000
 deck = ['🂡', '🂱', '🃁', '🃑',
@@ -22,22 +17,7 @@ deck = ['🂡', '🂱', '🃁', '🃑',
         '🂭', '🂽', '🃍', '🃝',
         '🂮', '🂾', '🃎', '🃞']
 
-values = [11, 11, 11, 11,
-        2, 2, 2, 2,
-        3, 3, 3, 3,
-        4, 4, 4, 4,
-        5, 5, 5, 5,
-        6, 6, 6, 6, 
-        7, 7, 7, 7, 
-        8, 8, 8, 8,
-        9, 9, 9, 9,
-        10, 10, 10, 10,
-        10, 10, 10, 10,
-        10, 10, 10, 10,
-        10, 10, 10, 10,
-        10, 10, 10, 10]
-
-dict =  {'🂡':11, '🂱':11, '🃁':11, '🃑':11,
+deck_values =  {'🂡':11, '🂱':11, '🃁':11, '🃑':11,
         '🂢':2, '🂲':2, '🃂':2, '🃒':2,
         '🂣':3, '🂳':3, '🃃':3, '🃓':3,
         '🂤':4, '🂴':4, '🃄':4, '🃔':4,
@@ -52,7 +32,6 @@ dict =  {'🂡':11, '🂱':11, '🃁':11, '🃑':11,
         '🂭':10, '🂽':10, '🃍':10, '🃝':10,
         '🂮':10, '🂾':10, '🃎':10, '🃞':10}
 
-deck_and_values = zip(deck,values)
 random.shuffle(deck)
         
 user_hand = []
@@ -60,7 +39,7 @@ dealer_hand = []
 ucard1 = deck[0]
 ucard2 = deck[1]
 dcard1= deck[2]
-newcard = deck[3]
+newcard = deck[random.randrange(len(deck))]
 game_over = False
 
 user_hand.append(ucard1)
@@ -85,6 +64,7 @@ def ask_choice():
 def user_new_card(user_hand):
     random.shuffle(deck)
     user_hand.append(newcard)
+    deck.remove(user_hand[-1])
     return user_hand
 
 
@@ -102,6 +82,23 @@ def gen_new_card(choice):
     elif choice == "stand":
       dealer_new_card(dealer_hand)
       return dealer_hand
+
+def calc_utotal(user_hand):
+    utotal = 0
+    x = 0
+    for i in range(len(user_hand)):
+       utotal += deck_values[user_hand[x]]
+       x +=1
+    return utotal
+
+def calc_dtotal(dealer_hand):
+    dtotal = 0
+    x = 0
+    for i in range(len(dealer_hand)):
+       dtotal += deck_values[dealer_hand[x]]
+       x +=1
+    return dtotal
+        
 
 def check_if_over_21(utotal,dtotal):
     if utotal > 21:
@@ -145,8 +142,8 @@ if __name__ == "__main__":
         choice = ask_choice()
         gen_new_card(choice)
         show_cards(user_hand,dealer_hand)
-        utotal = sum(user_hand)
-        dtotal = sum(dealer_hand)
+        utotal = calc_utotal(user_hand)
+        dtotal = calc_dtotal(dealer_hand)
         check_if_over_21(utotal,dtotal)
         user_wins = check_if_closer_21(utotal,dtotal)
     print("game_over.")
