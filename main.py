@@ -33,25 +33,21 @@ deck_values =  {'🂡':11, '🂱':11, '🃁':11, '🃑':11,
         '🂮':10, '🂾':10, '🃎':10, '🃞':10}
 
 random.shuffle(deck)
-        
-user_hand = []
-dealer_hand = []
+
 ucard1 = deck[0]
 ucard2 = deck[1]
-dcard1= deck[2]
+dcard1= deck[2]       
+user_hand = [ucard1, ucard2]
+dealer_hand = [dcard1]
 newcard = deck[random.randrange(len(deck))]
 game_over = False
 
-user_hand.append(ucard1)
-user_hand.append(ucard2)
-dealer_hand.append(dcard1)
 def hello_to_user():
   print("hello. we are playing blackjack.")
 
 def place_bets(fund):
   print(f"you have {fund}$ remaining.")
   bet = int(input("Place your bets:"))
-  return bet
 
 def show_initial_cards(user_hand,dealer_hand):
   print(f"user: {user_hand}")
@@ -77,12 +73,11 @@ def dealer_new_card(dealer_hand):
 
 
 def gen_new_card(choice):
-    if choice == "hit":
-      user_new_card(user_hand)
-      return user_hand
-    elif choice == "stand":
-      dealer_new_card(dealer_hand)
-      return dealer_hand
+    if choice == "hit" or choice == "h":
+      return "h"
+    if choice == "stand" or choice == "s":
+      return "s"
+
 
 def calc_utotal(user_hand):
     utotal = 0
@@ -99,76 +94,47 @@ def calc_dtotal(dealer_hand):
        dtotal += deck_values[dealer_hand[x]]
        x +=1
     return dtotal
-
-def check_if_21(utotal,dtotal):
-    if utotal == 21:
-       print("21!")
-       user_wins = True
-       game_over = True
-    elif dtotal == 21:
-       print("21!")
-       user_wins = False
-       game_over = True
-    else:
-       game_over = False
-       user_wins = False
-    return user_wins, game_over
-
         
 
 def check_if_over_21(utotal,dtotal):
     if utotal > 21:
         print("dealer wins.")
-        user_wins = False
         game_over = True
     elif dtotal > 21:
         print("user wins.")
         game_over = True
-        user_wins = True
     else:
-        user_wins = False
         game_over = False
     
-    return user_wins, game_over
+    return game_over, utotal, dtotal
 
 
 def check_if_closer_21(utotal, dtotal):
     u = 21- utotal
     d = 21 - dtotal
-    if 21-utotal <= 11:
-        user_wins = False
-        game_over = False
-    elif 21-dtotal <= 11:
-        user_wins = False
-        game_over = False
-    elif u < d:
+    if u < d:
         user_wins = True
-        game_over = False
     elif u > d:
         user_wins = False
-        game_over = True
-    else:
-        user_wins = False
-        game_over = False
-    return user_wins, game_over
+    return user_wins
 
 def show_cards(new_user, new_dealer):
    print(new_user)
    print(new_dealer)
 
-def check_game_over(game_over):
-    user_wins, game_over = check_if_21(utotal,dtotal)
-    if game_over == False:
-        user_wins, game_over = check_if_over_21(utotal,dtotal)
-        if game_over == False:
-            user_wins, game_over = check_if_closer_21(utotal,dtotal)
-    return user_wins, game_over
-
-
 
 if __name__ == "__main__":
+    user_hand = [ucard1, ucard2]
+    dealer_hand = [dcard1]
     hello_to_user()
-    bet = place_bets(fund)
+    place_bets(fund)
+    show_initial_cards(user_hand,dealer_hand)
+    choice = ask_choice()
+    hors = gen_new_card(choice)
+    if hors == "h": 
+       user_new_card(user_hand)
+    elif hors == "s":
+       dealer_new_card(dealer_hand)    
         
     while game_over == False:
         show_cards(user_hand,dealer_hand)
@@ -177,14 +143,10 @@ if __name__ == "__main__":
         show_cards(user_hand,dealer_hand)
         utotal = calc_utotal(user_hand)
         dtotal = calc_dtotal(dealer_hand)
-        user_wins, game_over = check_game_over(game_over)
-        if game_over == True:
-           break
+        check_if_over_21(utotal,dtotal)
+        user_wins = check_if_closer_21(utotal,dtotal)
     print("game_over.")
     if user_wins == True:
-      fund += bet
       print("User wins.")
     else:
-      fund -= bet
       print("Dealer wins.")
-    print("play again? ")
