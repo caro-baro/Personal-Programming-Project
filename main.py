@@ -59,15 +59,14 @@ def ask_choice():
     return choice
 
 def user_new_card(user_hand):
-    random.shuffle(deck)
-    user_hand.append(newcard)
-    deck.remove(user_hand[-1])
+    user_hand.append(deck[-1])
+    deck.pop
     return user_hand
 
 
 def dealer_new_card(dealer_hand):
-    random.shuffle(deck)
-    dealer_hand.append(newcard) 
+    dealer_hand.append(deck[-1]) 
+    deck.pop
     return dealer_hand
 
 
@@ -98,15 +97,16 @@ def calc_dtotal(dealer_hand):
 
 def check_if_over_21(utotal,dtotal):
     if utotal > 21:
-        print("dealer wins.")
         game_over = True
+        user_wins = False
     elif dtotal > 21:
-        print("user wins.")
         game_over = True
+        user_wins = False
     else:
         game_over = False
+        user_wins = False
     
-    return game_over, utotal, dtotal
+    return game_over, user_wins
 
 
 def check_if_closer_21(utotal, dtotal):
@@ -122,29 +122,42 @@ def show_cards(new_user, new_dealer):
    print(new_user)
    print(new_dealer)
 
+def check_winner(utotal,dtotal):
+   game_over, user_wins = check_if_over_21(utotal,dtotal)
+   if game_over == False:
+      game_over, user_wins = check_if_closer_21(utotal,dtotal)
+   return game_over, user_wins
+
 
 if __name__ == "__main__":
     user_hand = [ucard1, ucard2]
     dealer_hand = [dcard1]
     hello_to_user()
     place_bets(fund)
-    show_initial_cards(user_hand,dealer_hand)
-    choice = ask_choice()
-    hors = gen_new_card(choice)
-    if hors == "h": 
-       user_new_card(user_hand)
-    elif hors == "s":
-       dealer_new_card(dealer_hand)    
+    show_initial_cards(user_hand,dealer_hand)    
         
     while game_over == False:
-        show_cards(user_hand,dealer_hand)
         choice = ask_choice()
-        gen_new_card(choice)
-        show_cards(user_hand,dealer_hand)
-        utotal = calc_utotal(user_hand)
-        dtotal = calc_dtotal(dealer_hand)
-        check_if_over_21(utotal,dtotal)
-        user_wins = check_if_closer_21(utotal,dtotal)
+        hors = gen_new_card(choice)
+        if hors == "h": 
+            user_new_card(user_hand)
+            show_cards(user_hand, dealer_hand)
+            utotal = calc_utotal(user_hand)
+            dtotal = calc_dtotal(dealer_hand)
+        elif hors == "s":
+            dtotal = calc_dtotal(dealer_hand)
+            while dtotal <= 17:
+                dtotal = calc_dtotal(dealer_hand)
+                dealer_new_card(dealer_hand)
+            show_cards(user_hand, dealer_hand)
+            utotal = calc_utotal(user_hand)
+        game_over, user_wins = check_winner(utotal,dtotal)
+        
+
+
+
+
+        
     print("game_over.")
     if user_wins == True:
       print("User wins.")
