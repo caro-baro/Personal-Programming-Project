@@ -47,7 +47,17 @@ def hello_to_user():
 
 def place_bets(fund):
   print(f"you have {fund}$ remaining.")
-  bet = int(input("Place your bets:"))
+  bet = input("Place your bets:")
+  try:
+     bet = int(bet)
+     print(f"You have bet ${bet}")
+     return bet
+  
+  except ValueError:
+     bet = int(input("invalid bet. try again"))
+     print(f"You have bet ${bet}")
+     return bet
+     
 
 def show_initial_cards(user_hand,dealer_hand):
   print(f"user: {user_hand}")
@@ -114,9 +124,12 @@ def check_if_closer_21(utotal, dtotal):
     d = 21 - dtotal
     if u < d:
         user_wins = True
+        return user_wins
     elif u > d:
         user_wins = False
-    return user_wins
+        return user_wins
+    game_over = False
+    return game_over
 
 def show_cards(new_user, new_dealer):
    print(new_user)
@@ -133,7 +146,7 @@ if __name__ == "__main__":
     user_hand = [ucard1, ucard2]
     dealer_hand = [dcard1]
     hello_to_user()
-    place_bets(fund)
+    bet = place_bets(fund)
     show_initial_cards(user_hand,dealer_hand)    
         
     while game_over == False:
@@ -160,6 +173,10 @@ if __name__ == "__main__":
         
     print("game_over.")
     if user_wins == True:
+      fund += bet
       print("User wins.")
+      print(f"You have {fund}$ remaining.")
     else:
+      fund -= bet
       print("Dealer wins.")
+      print(f"You have {fund}$ remaining.")
